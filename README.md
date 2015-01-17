@@ -30,4 +30,6 @@ http://modperlbook.org/html/6-11-Generating-Correct-HTTP-Headers.html
 Used this site to reference of how we checkedpathways and checked files
 https://docs.python.org/2/library/os.path.html
 
-
+Used this site initially to find out how to get solution to find current working directory and also 
+how to check os.realpath.(file) also in same website
+http://stackoverflow.com/questions/50499/in-python-how-do-i-get-the-path-and-name-of-the-file-that-is-currently-executin
