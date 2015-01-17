@@ -54,8 +54,7 @@ class MyWebServer(SocketServer.BaseRequestHandler):
         #check if pathway is a file and check if the requested pathway is in what the file return as path /../
         if (os.path.isfile(pathway) and os.getcwd() in os.path.realpath(pathway)):
                 #message to client opens html or css and open file requested
-                respmes = (HTTP200+style+"\n\n"
-                       +open(pathway).read())
+                respmes = (HTTP200+style+"\n\n" +open(pathway).read())
 
         #checks if file is a directory and handles a redirect according to what is inputted , checks path /../
         elif (os.path.isdir(pathway) and os.getcwd() in os.path.realpath(pathway)):
@@ -63,13 +62,11 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             #open index file with format html for first get request from http://127.0.0.1:8080
             if Firstword[1].endswith("/"):
             	pathway = pathway+"index.html"
-            	respmes = (reHTTP200+
-                           open(pathway).read())
+            	respmes = (reHTTP200+ open(pathway).read())
             else:
                 #opens index.html file in deep, redirects http://127.0.0.1:8080/deep to http://127.0.0.1:8080/deep/
                 pathway = pathway+"/index.html"
-                respmes = (HTTP301+
-                           open(pathway).read())
+                respmes = (HTTP301+open(pathway).read())
 
         #doesnt exist! not in deep or was not www index or was not get request
         else:
