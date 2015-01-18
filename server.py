@@ -38,10 +38,7 @@ class MyWebServer(SocketServer.BaseRequestHandler):
         return pathway, Firstword, Reqword
 
     def handle(self):
-        # parse incoming request
-        self.data = self.request.recv(1024).strip()
-        Splitreq =  self.data.splitlines()
-      
+
         #variables used / premade HTTP 
     	style = ""
     	respmes = ""
@@ -49,7 +46,11 @@ class MyWebServer(SocketServer.BaseRequestHandler):
         reHTTP200 = "HTTP/1.1 200 OK\r\n"+ "Location: http://127.0.0.1:8080/\r\n\r\n"
         HTTP301 = "HTTP/1.1 301 Moved Permanently\r\n"+ "Location: http://127.0.0.1:8080/deep/\r\n\r\n"
         HTTP404 = "HTTP/1.1 404 Not Found\n"+"Content-Type: text/html\n\n"+"<!DOCTYPE html>\n"+"<html><body>HTTP/1.1 404 Not Found\n"+"Not found on server directory</body></html>"
-        
+
+        # parse incoming request
+        self.data = self.request.recv(1024).strip()
+        Splitreq =  self.data.splitlines()
+
         #get pathway requested
         pathway = self.parserequest(Splitreq)[0]
         Firstword = self.parserequest(Splitreq)[1]
