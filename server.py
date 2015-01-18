@@ -32,20 +32,15 @@ import os.path
 class MyWebServer(SocketServer.BaseRequestHandler):
 
     def parserequest(self, request):
-          Firstword = request[0].split()
-          pathway = os.getcwd() + "/www"+ Firstword[1]
-          Reqword = Firstword[0]
-         # print("Reqword",Reqword)
-          return pathway, Firstword, Reqword
-
-    def sendresponse(self, responsecode):
-        return
+        Firstword = request[0].split()
+        pathway = os.getcwd() + "/www"+ Firstword[1]
+        Reqword = Firstword[0]
+        return pathway, Firstword, Reqword
 
     def handle(self):
         # parse incoming request
         self.data = self.request.recv(1024).strip()
         Splitreq =  self.data.splitlines()
-      #  print(Splitreq)
       
         #variables used / premade HTTP 
     	style = ""
@@ -57,15 +52,13 @@ class MyWebServer(SocketServer.BaseRequestHandler):
         
         #get pathway requested
         pathway = self.parserequest(Splitreq)[0]
-      #  print(pathway)
+        Firstword = self.parserequest(Splitreq)[1]
 
         #see if what is being requested is a css or html
         style = pathway.split(".")[-1].lower()
-        Firstword = self.parserequest(Splitreq)[1]
-       # print("Firstword",Firstword)
+
         #see if get request
         Reqword = self.parserequest(Splitreq)[2].lower()
-        #print("Reqword",Reqword)
         
         #check if pathway is a file and check if the requested pathway is in what the file return as path /../
         if (Reqword == "get" and os.path.isfile(pathway) and os.getcwd() in os.path.realpath(pathway)):
@@ -90,9 +83,6 @@ class MyWebServer(SocketServer.BaseRequestHandler):
 
         #send response to the client
         self.request.sendall(respmes)
-
-   
-
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 8080
