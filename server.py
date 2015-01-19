@@ -45,14 +45,16 @@ class MyWebServer(SocketServer.BaseRequestHandler):
         HTTP301 = "HTTP/1.1 301 Moved Permanently\r\n"+ "Location: http://127.0.0.1:8080/deep/\r\n\r\n"
         HTTP404 = "HTTP/1.1 404 Not Found\n"+"Content-Type: text/html\n\n"+"<!DOCTYPE html>\n"+"<html><body>HTTP/1.1 404 Not Found\n"+"Not found</body></html>"
 
-        #check if pathway is a file and check if the requested pathway is in what the file return as path /../ 
-        if (Reqword == "get" and os.path.isfile(pathway) and os.getcwd() in os.path.realpath(pathway)):
+        #check if pathway is a file and check if the requested pathway is in what the file return as path /../
+        if (Reqword == "get" and os.path.isfile(pathway) and os.getcwd() in os.path.realpath(pathway) and "/../" not in pathway):
                 #message to client opens html or css and open file requested
             respmes = (HTTP200+style+"\n\n"+open(pathway).read())
 
-        #checks if file is a directory and handles a redirect according to what is inputted , checks path /../
-        elif (Reqword == "get" and os.path.isdir(pathway) and os.getcwd() in os.path.realpath(pathway)):
-    
+        else:
+            respmes = (HTTP404)
+
+        #checks if file is a directory for intial load of html page
+        if (os.path.isdir(pathway)):
             #open index file with format html for first get request from http://127.0.0.1:8080
             if Firstword[1].endswith("/"):
                 pathway = pathway+"index.html"
@@ -60,11 +62,11 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             else:
                 #opens index.html file in deep, redirects http://127.0.0.1:8080/deep to http://127.0.0.1:8080/deep/
                 pathway = pathway+"/index.html"
-                respmes = (HTTP301+open(pathway).read())
-
-        #doesnt exist! not in deep or was not www index or was not get request
+                respmes = (HTTP301+open(pathway).read())t
         else:
+           #doesnt exist! not in deep or was not www index or was not get reques
             respmes = (HTTP404)
+
         return respmes
 
     def handle(self):
