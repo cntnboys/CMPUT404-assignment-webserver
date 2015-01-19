@@ -62,10 +62,9 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             else:
                 #opens index.html file in deep, redirects http://127.0.0.1:8080/deep to http://127.0.0.1:8080/deep/
                 pathway = pathway+"/index.html"
-                respmes = (HTTP301+open(pathway).read())t
+                respmes = (HTTP301+open(pathway).read())
         else:
-           #doesnt exist! not in deep or was not www index or was not get reques
-            respmes = (HTTP404)
+            next
 
         return respmes
 
