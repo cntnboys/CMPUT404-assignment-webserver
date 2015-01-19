@@ -48,23 +48,22 @@ class MyWebServer(SocketServer.BaseRequestHandler):
         #check if pathway is a file and check if the requested pathway is in what the file return as path /../
         if (Reqword == "get" and os.path.isfile(pathway) and os.getcwd() in os.path.realpath(pathway)):
                 #message to client opens html or css and open file requested
-            respmes = (HTTP200+style+"\n\n"+open(pathway).read())
-
-        else:
-            respmes = (HTTP404)
+            respmes = HTTP200+style+"\n\n"+open(pathway).read()
 
         #checks if file is a directory for intial load of html page
-        if (os.path.isdir(pathway)):
+        elif (os.path.isdir(pathway)):
             #open index file with format html for first get request from http://127.0.0.1:8080
             if Firstword[1].endswith("/"):
                 pathway = pathway+"index.html"
-                respmes = (reHTTP200+open(pathway).read())
+                respmes = reHTTP200+open(pathway).read()
+                
             else:
                 #opens index.html file in deep, redirects http://127.0.0.1:8080/deep to http://127.0.0.1:8080/deep/
                 pathway = pathway+"/index.html"
-                respmes = (HTTP301+open(pathway).read())
+                respmes = HTTP301+open(pathway).read()
+              
         else:
-            next
+            respmes = HTTP404
 
         return respmes
 
@@ -90,12 +89,13 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             Reqword = self.parserequest(Splitreq)[2].lower()
         
         #check if reqword is get
+        #send response to the client
             if Reqword == "get":
-                
                 respmes = self.getrequest(pathway, Reqword, style, Firstword)
-             #send response to the client
                 self.request.sendall(respmes)
+
             else:
+
                  respmes = (HTTP404)
                  self.request.sendall(respmes) 
         except:
