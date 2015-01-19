@@ -46,7 +46,7 @@ class MyWebServer(SocketServer.BaseRequestHandler):
         HTTP404 = "HTTP/1.1 404 Not Found\n"+"Content-Type: text/html\n\n"+"<!DOCTYPE html>\n"+"<html><body>HTTP/1.1 404 Not Found\n"+"Not found</body></html>"
 
         #check if pathway is a file and check if the requested pathway is in what the file return as path /../
-        if (Reqword == "get" and os.path.isfile(pathway) and os.getcwd() in os.path.realpath(pathway) and "/../" not in pathway):
+        if (Reqword == "get" and os.path.isfile(pathway) and os.getcwd() in os.path.realpath(pathway)):
                 #message to client opens html or css and open file requested
             respmes = (HTTP200+style+"\n\n"+open(pathway).read())
 
