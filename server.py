@@ -69,28 +69,39 @@ class MyWebServer(SocketServer.BaseRequestHandler):
 
     def handle(self):
 
+        HTTP404 = "HTTP/1.1 404 Not Found\n"+"Content-Type: text/html\n\n"+"<!DOCTYPE html>\n"+"<html><body>HTTP/1.1 404 Not Found\n"+"Not found</body></html>"
+        
+        try:
         # parse incoming request
-        self.data = self.request.recv(1024).strip()
-        Splitreq =  self.data.splitlines()
+            self.data = self.request.recv(1024).strip()
+            Splitreq =  self.data.splitlines()
 
          #variables used
-    	style = ""
-    	respmes = ""
+            style = ""
+            respmes = ""
         
         #get pathway requested
-        pathway = self.parserequest(Splitreq)[0]
-        Firstword = self.parserequest(Splitreq)[1]
+            pathway = self.parserequest(Splitreq)[0]
+            Firstword = self.parserequest(Splitreq)[1]
         #see if what is being requested is a css or html
-        style = pathway.split(".")[-1].lower()
+            style = pathway.split(".")[-1].lower()
         #see if get request
-        Reqword = self.parserequest(Splitreq)[2].lower()
+            Reqword = self.parserequest(Splitreq)[2].lower()
         
         #check if reqword is get
-        respmes = self.getrequest(pathway, Reqword, style, Firstword)
-
-
-        #send response to the client
-        self.request.sendall(respmes)
+            if Reqword == "get":
+                
+                respmes = self.getrequest(pathway, Reqword, style, Firstword)
+             #send response to the client
+                self.request.sendall(respmes)
+            else:
+                 respmes = (HTTP404)
+                 self.request.sendall(respmes) 
+        except:
+            respmes = (HTTP404)
+            self.request.sendall(respmes)
+            
+       
 if __name__ == "__main__":
     HOST, PORT = "localhost", 8080
 
