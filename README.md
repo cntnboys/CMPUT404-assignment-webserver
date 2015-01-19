@@ -24,6 +24,8 @@ examples thus some of the code is Copyright © 2001-2013 Python
 Software Foundation; All Rights Reserved under the PSF license (GPL
 compatible) http://docs.python.org/2/library/socketserver.html
 
+Used website to find how to find if file exists http://stackoverflow.com/questions/82831/check-if-a-file-exists-using-python
+
 Used this site to reference understanding of how to format html display
 http://modperlbook.org/html/6-11-Generating-Correct-HTTP-Headers.html
 
