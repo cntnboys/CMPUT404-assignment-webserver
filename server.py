@@ -31,6 +31,11 @@ import os.path
 
 class MyWebServer(SocketServer.BaseRequestHandler):
 
+    HTTP200 = "HTTP/1.1 200 OK\n" + "Content-type: text/"
+    reHTTP200 = "HTTP/1.1 200 OK\r\n"+ "Location: http://127.0.0.1:8080/\r\n\r\n"
+    HTTP301 = "HTTP/1.1 301 Moved Permanently\r\n"+ "Location: http://127.0.0.1:8080/deep/\r\n\r\n"
+    HTTP404 = "HTTP/1.1 404 Not Found\n"+"Content-Type: text/html\n\n"+"<!DOCTYPE html>\n"+"<html><body>HTTP/1.1 404 \n"+"Not found</body></html>"
+
     def parserequest(self, request):
         Firstword = request[0].split()
         pathway = os.getcwd() + "/www"+ Firstword[1]
@@ -40,67 +45,59 @@ class MyWebServer(SocketServer.BaseRequestHandler):
 
     def getrequest(self,pathway, Reqword, style, Firstword):
         
-        HTTP200 = "HTTP/1.1 200 OK\n" + "Content-type: text/"
-        reHTTP200 = "HTTP/1.1 200 OK\r\n"+ "Location: http://127.0.0.1:8080/\r\n\r\n"
-        HTTP301 = "HTTP/1.1 301 Moved Permanently\r\n"+ "Location: http://127.0.0.1:8080/deep/\r\n\r\n"
-        HTTP404 = "HTTP/1.1 404 Not Found\n"+"Content-Type: text/html\n\n"+"<!DOCTYPE html>\n"+"<html><body>HTTP/1.1 404 Not Found\n"+"Not found</body></html>"
-
         #check if pathway is a file and check if the requested pathway is in what the file return as path /../
         if (Reqword == "get" and os.path.isfile(pathway) and os.getcwd() in os.path.realpath(pathway)):
-                #message to client opens html or css and open file requested
-            respmes = HTTP200+style+"\n\n"+open(pathway).read()
+            
+   	    #message to client opens html or css and open file requested
+            respmes = self.HTTP200+style+"\n\n"+open(pathway).read()
 
         #checks if file is a directory for intial load of html page
         elif (os.path.isdir(pathway)):
+
             #open index file with format html for first get request from http://127.0.0.1:8080
             if Firstword[1].endswith("/"):
                 pathway = pathway+"index.html"
-                respmes = reHTTP200+open(pathway).read()
+                respmes = self.reHTTP200+open(pathway).read()
                 
             else:
                 #opens index.html file in deep, redirects http://127.0.0.1:8080/deep to http://127.0.0.1:8080/deep/
                 pathway = pathway+"/index.html"
-                respmes = HTTP301+open(pathway).read()
+                respmes = self.HTTP301+open(pathway).read()
               
         else:
-            respmes = HTTP404
+            respmes = self.HTTP404
 
         return respmes
 
     def handle(self):
-
-        HTTP404 = "HTTP/1.1 404 Not Found\n"+"Content-Type: text/html\n\n"+"<!DOCTYPE html>\n"+"<html><body>HTTP/1.1 404 Not Found\n"+"Not found</body></html>"
-        
-        try:
+ 
         # parse incoming request
-            self.data = self.request.recv(1024).strip()
-            Splitreq =  self.data.splitlines()
+        self.data = self.request.recv(1024).strip()
+        Splitreq =  self.data.splitlines()
 
-         #variables used
-            style = ""
-            respmes = ""
+        #variables used
+        style = ""
+        respmes = ""
         
         #get pathway requested
-            pathway = self.parserequest(Splitreq)[0]
-            Firstword = self.parserequest(Splitreq)[1]
+        pathway = self.parserequest(Splitreq)[0]
+        Firstword = self.parserequest(Splitreq)[1]
+
         #see if what is being requested is a css or html
-            style = pathway.split(".")[-1].lower()
+        style = pathway.split(".")[-1].lower()
+
         #see if get request
-            Reqword = self.parserequest(Splitreq)[2].lower()
+        Reqword = self.parserequest(Splitreq)[2].lower()
         
         #check if reqword is get
         #send response to the client
-            if Reqword == "get":
-                respmes = self.getrequest(pathway, Reqword, style, Firstword)
+        if Reqword == "get":
+       		respmes = self.getrequest(pathway, Reqword, style, Firstword)
                 self.request.sendall(respmes)
 
-            else:
-
-                 respmes = (HTTP404)
-                 self.request.sendall(respmes) 
-        except:
-            respmes = (HTTP404)
-            self.request.sendall(respmes)
+        else:
+		respmes = (self.HTTP404)
+                self.request.sendall(respmes) 
             
        
 if __name__ == "__main__":
